@@ -407,5 +407,6 @@ $response['percentagepassed'] = round($numpassed / $numtotal, 2) * 100;
 
 $end = microtime_float();
 $response['generationtime'] = round($end - $start, 3);
+add_profiling_time('testSummary', $response['generationtime']);
 
 echo json_encode($response);

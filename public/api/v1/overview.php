@@ -587,6 +587,7 @@ $response['staticanalyses'] = $static_analyses_response;
 
 $end = microtime_float();
 $response['generationtime'] = round($end - $start, 3);
+add_profiling_time('overview', $response['generationtime']);
 echo json_encode(cast_data_for_JSON($response));
 
 // Replace all non-word characters with underscores.

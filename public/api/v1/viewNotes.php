@@ -126,5 +126,6 @@ $response['notes'] = $notes;
 $end = microtime_float();
 $generation_time = round($end - $start, 2);
 $response['generationtime'] = $generation_time;
+add_profiling_time('viewNotes', $response['generationtime']);
 
 echo json_encode(cast_data_for_JSON($response));

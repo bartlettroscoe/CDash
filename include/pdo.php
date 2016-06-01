@@ -137,3 +137,18 @@ function pdo_delete_query($qry)
 {
     return pdo_query_and_log_if_failed($qry, 'pdo_delete_query');
 }
+
+
+function add_profiling_time($id, $time) {
+    pdo_query("INSERT INTO profiling (id, time_spent, instances) VALUES ('$id', $time, 1)
+               ON DUPLICATE KEY UPDATE time_spent = time_spent + $time, instances = instances + 1");
+    add_last_sql_error("add_profiling_time");
+
+    /**
+       CREATE TABLE profiling (
+           id VARCHAR(255) UNIQUE,
+           time_spent FLOAT,
+           instances INTEGER
+       );
+    **/
+}

@@ -1375,6 +1375,7 @@ function echo_main_dashboard_JSON($project_instance, $date)
 
     $end = microtime_float();
     $response['generationtime'] = round($end - $start, 3);
+    add_profiling_time('index', $response['generationtime']);
     if (!empty($site_response)) {
         $response = array_merge($response, $site_response);
     }

@@ -475,6 +475,7 @@ $response['build']['displaylabels'] &= $labels_found;
 $end = microtime_float();
 $generation_time = round($end - $start, 3);
 $response['generationtime'] = $generation_time;
+add_profiling_time('viewTest', $response['generationtime']);
 $response['columncount'] = $columncount;
 
 echo json_encode(cast_data_for_JSON($response));

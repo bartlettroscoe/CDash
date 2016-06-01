@@ -321,4 +321,5 @@ if (!empty($measurements_response)) {
 $response['test'] = $test_response;
 $end = microtime_float();
 $response['generationtime'] = round($end - $start, 3);
+add_profiling_time('testDetails', $response['generationtime']);
 echo json_encode($response);

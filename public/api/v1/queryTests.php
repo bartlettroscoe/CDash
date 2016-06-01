@@ -237,5 +237,6 @@ $response['builds'] = $builds;
 
 $end = microtime_float();
 $response['generationtime'] = round($end - $start, 3);
+add_profiling_time('queryTests', $response['generationtime']);
 
 echo json_encode(cast_data_for_JSON($response));

@@ -139,6 +139,7 @@ function rest_get()
 
     $end = microtime_float();
     $response['generationtime'] = round($end - $start, 3);
+    add_profiling_time('subproject', $response['generationtime']);
     echo json_encode(cast_data_for_JSON($response));
 }
 

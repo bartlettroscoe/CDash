@@ -241,6 +241,7 @@ if (!empty($subproject_groups)) {
 
 $end = microtime_float();
 $response['generationtime'] = round($end - $start, 3);
+add_profiling_time('compareCoverage', $response['generationtime']);
 
 echo json_encode(cast_data_for_JSON($response));
 
