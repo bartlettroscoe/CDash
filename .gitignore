@@ -19,3 +19,9 @@
 /vendor/
 build/
 local/
+/.vagrant
+/ansible/roles/geerlingguy.apache/
+/ansible/roles/geerlingguy.composer/
+/ansible/roles/geerlingguy.mysql/
+/ansible/roles/geerlingguy.php/
+/ansible/roles/leonidas.nvm/
