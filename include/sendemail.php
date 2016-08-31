@@ -481,8 +481,13 @@ function get_email_summary($buildid, $errors, $errorkey, $maxitems, $maxchars, $
         }
 
         // Add the tests not run
-        $test_query = pdo_query('SELECT test.name,test.id FROM build2test,test WHERE build2test.buildid=' . qnum($buildid) .
-            " AND test.id=build2test.testid AND (build2test.status='notrun'" . $sql . ") ORDER BY test.id LIMIT $maxitems");
+        $test_query = pdo_query(
+            'SELECT test.name, test.id FROM build2test b2t
+            JOIN test t ON (t.id=b2t.testid)
+            WHERE b2t.buildid=' . qnum($buildid) .  "
+            AND t.details != 'Disabled'
+            AND (b2t.status='notrun' $sql)
+            ORDER BY test.id LIMIT $maxitems");
         add_last_sql_error('sendmail');
         $numrows = pdo_num_rows($test_query);
 
