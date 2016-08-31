@@ -258,7 +258,6 @@ if ($onlypassed) {
 } elseif ($onlyfailed) {
     $status = "AND bt.status='failed'";
 } elseif ($onlynotrun) {
-    $displaydetails = 0;
     $status = "AND bt.status='notrun'";
 } elseif ($onlytimestatus) {
     $status = "AND bt.timestatus>='$testtimemaxstatus'";
