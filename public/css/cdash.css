@@ -1,11 +1,13 @@
 @import url("common.css");
 .normal { background-color : #8aba5a; }
 .warning { background-color : #fdb66d; }
+.disabled { background-color : #ffff99; }
 .error { background-color : #de6868; }
 
-.tabb tbody tr.odd td.normal { background-color: #7DB04A; }
-.tabb tbody tr.odd td.warning { background-color: #FCA854; }
-.tabb tbody tr.odd td.error { background-color: #D95454; }
+.tabb tbody tr.odd td.normal { background-color: #7db04a; }
+.tabb tbody tr.odd td.warning { background-color: #fca854; }
+.tabb tbody tr.odd td.disabled { background-color: #eeee00; }
+.tabb tbody tr.odd td.error { background-color: #d95454; }
 
 .Passed { background-color : #8aba5a; }
 .Failed { background-color : #fdba76; }

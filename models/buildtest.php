@@ -107,6 +107,9 @@ class BuildTest
     public static function marshal($data, $buildid, $projectid, $projectshowtesttime, $testtimemaxstatus, $testdate)
     {
         $marshaledStatus = self::marshalStatus($data['status']);
+        if ($data['details'] === 'Disabled') {
+            $marshaledStatus = array('Not Run', 'disabled');
+        }
         $marshaledData = array(
             'id' => $data['id'],
             'buildid' => $buildid,
