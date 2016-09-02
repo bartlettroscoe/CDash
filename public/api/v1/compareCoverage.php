@@ -23,6 +23,7 @@ require_once 'models/project.php';
 $start = microtime_float();
 $response = begin_JSON_response();
 $response['title'] = 'CDash : Compare Coverage';
+$response['showcalendar'] = 1;
 
 // Check if we can connect to the database.
 $db = pdo_connect("$CDASH_DB_HOST", "$CDASH_DB_LOGIN", "$CDASH_DB_PASS");
