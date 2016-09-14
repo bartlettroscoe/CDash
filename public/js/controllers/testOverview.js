@@ -1,6 +1,7 @@
 CDash.controller('TestOverviewController',
   function TestOverviewController($scope, $rootScope, $http, $filter, multisort, renderTimer) {
     $scope.loading = true;
+    $scope.groupChanged = false;
 
     // Check for sort order cookie.
     var sort_order = [];
@@ -38,6 +39,13 @@ CDash.controller('TestOverviewController',
       $rootScope.setupCalendar($scope.cdash.date);
       $scope.cdash.tests = $filter('orderBy')($scope.cdash.tests, $scope.orderByFields);
       $scope.pageChanged();
+
+      // Group selection.
+      var idx = $scope.cdash.groups.map(function(x) {return x.id; }).indexOf($scope.cdash.groupid);
+      if (idx < 0) {
+        idx = 0;
+      }
+      $scope.cdash.selectedGroup = $scope.cdash.groups[idx];
     }).finally(function() {
       $scope.loading = false;
     });
@@ -62,5 +70,18 @@ CDash.controller('TestOverviewController',
       $scope.cdash.tests = $filter('orderBy')($scope.cdash.tests, $scope.orderByFields);
       $scope.pageChanged();
       $.cookie('cdash_test_overview_sort', $scope.orderByFields);
+    };
+
+    $scope.formSubmit = function() {
+      var uri = '//' + location.host + location.pathname + '?project=' + $scope.cdash.projectname_encoded;
+      if ($scope.cdash.to_date && $scope.cdash.from_date) {
+        uri += '&from=' + $scope.cdash.from_date + '&to=' + $scope.cdash.to_date;
+      } else {
+        uri += '&date=' + $scope.cdash.date;
+      }
+      if ($scope.cdash.selectedGroup.id > 0) {
+        uri += '&group=' + $scope.cdash.selectedGroup.id;
+      }
+      window.location = uri;
     };
 });

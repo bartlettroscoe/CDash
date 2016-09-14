@@ -100,30 +100,73 @@ if (is_null($begin_date)) {
     $end_date = gmdate(FMT_DATETIME, $end_timestamp);
 }
 
+// Check if the user specified a buildgroup.
+$groupid = 0;
+$group_join = '';
+$group_clause = "b.type = 'Nightly'";
+$group_link = '';
+if (isset($_GET['group']) && is_numeric($_GET['group']) && $_GET['group'] > 0) {
+    $groupid = $_GET['group'];
+    $group_join = 'JOIN build2group b2g ON (b2g.buildid=b.id)';
+    $group_clause = "b2g.groupid=:groupid";
+    $group_link = "&group=$groupid";
+}
+$response['groupid'] = $groupid;
+
 get_dashboard_JSON($projectname, $date, $response);
 
 // Setup the menu of relevant links.
 $menu = array();
-$menu['previous'] = 'testOverview.php?project=' . urlencode($projectname) . "&date=$previousdate";
+$menu['previous'] = 'testOverview.php?project=' . urlencode($projectname) . "&date=$previousdate$group_link";
 if ($date != '' && date(FMT_DATE, $beginning_timestamp) != date(FMT_DATE)) {
-    $menu['next'] = 'testOverview.php?project=' . urlencode($projectname) . "&date=$nextdate";
+    $menu['next'] = 'testOverview.php?project=' . urlencode($projectname) . "&date=$nextdate$group_link";
 } else {
     $menu['nonext'] = '1';
 }
 $currentdate = get_dashboard_date_from_project($projectname, $date);
-$menu['current'] = 'testOverview.php?project=' . urlencode($projectname) . "&date=$currentdate";
+$menu['current'] = 'testOverview.php?project=' . urlencode($projectname) . "&date=$currentdate$group_link";
 $menu['back'] = 'index.php?project=' . urlencode($projectname) . "&date=$currentdate";
 $response['menu'] = $menu;
 
+// List all active buildgroups for this project.
+$stmt = $pdo->prepare(
+    "SELECT id, name, position FROM buildgroup bg
+    JOIN buildgroupposition bgp on (bgp.buildgroupid=bg.id)
+    WHERE projectid=?
+    AND bg.endtime='1980-01-01 00:00:00'");
+$stmt->execute(array($projectid));
+$groups_response = array();
+
+// Begin with an entry for the default "All Nightly Builds" selection.
+$default_group = array();
+$default_group['id'] = 0;
+$default_group['name'] = 'All Nightly Builds';
+$default_group['position'] = 0;
+$groups_response[] = $default_group;
+
+while ($row = $stmt->fetch()) {
+    $group_response = array();
+    $group_response['id'] = $row['id'];
+    $group_response['name'] = $row['name'];
+    $group_response['position'] = $row['position'];
+    $groups_response[] = $group_response;
+}
+$response['groups'] = $groups_response;
+
+// Main query: find all the requested tests.
 $stmt = $pdo->prepare(
     "SELECT t.name, b2t.status FROM build b
     JOIN build2test b2t ON (b2t.buildid=b.id)
     JOIN test t ON (t.id=b2t.testid)
-    WHERE b.projectid = :projectid AND b.parentid != -1 AND b.type = 'Nightly'
+    $group_join
+    WHERE b.projectid = :projectid AND b.parentid != -1 AND $group_clause
     AND b.starttime < :end AND b.starttime >= :begin");
 $stmt->bindParam(':projectid', $projectid);
 $stmt->bindParam(':begin', $begin_date);
 $stmt->bindParam(':end', $end_date);
+if ($groupid > 0) {
+    $stmt->bindParam(':groupid', $groupid);
+}
 $stmt->execute();
 
 $tests_response[] = array();
