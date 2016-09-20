@@ -104,6 +104,10 @@ function curl_request($request)
 function do_submit($fileHandleOrSubmissionId, $projectid, $expected_md5 = '', $do_checksum = true,
                    $submission_id = 0)
 {
+    global $CDASH_LARGE_TEXT_LIMIT;
+
+    add_log('large text limit is' . $CDASH_LARGE_TEXT_LIMIT, 'do_submit', LOG_ERR);
+
     include 'config/config.php';
     $filehandle = getSubmissionFileHandle($fileHandleOrSubmissionId);
 
